@@ -68,26 +68,5 @@
   <footer class="bg-dark text-white text-center py-3">
     <p class="mb-0">&copy; 2025 Happy Kids - Todos los derechos reservados</p>
   </footer>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Script para descargar boleta -->
-  <script>
-    function descargarBoleta() {
-      const contenido = `
-        Happy Kids - Boleta de Compra
-        -----------------------------
-        Producto: Puzzle 3D
-        Juego de Memoria x2
-        Envío
-        Total: $31.000
-      `;
-      const blob = new Blob([contenido], { type: 'text/plain' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'boleta_compra.txt'; 
-      link.click();
-    }
-  </script>
 </body>
 </html>
