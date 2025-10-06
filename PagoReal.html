@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pago - Happy Kids</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main {
+      flex: 1;
+    }
+    footer {
+      background-color: #ffc107;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: auto;
+    }
+    .cart-summary {
+      background-color: #fffbea;
+      border: 1px solid #ffecb3;
+      border-radius: 10px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-warning bg-warning">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-white" href="index.html">Happy Kids</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link text-white fw-semibold" href="catalogo.html">Catálogo</a></li>
+          <li class="nav-item"><a class="nav-link text-white fw-semibold" href="carrito.html">Carrito</a></li>
+          <li class="nav-item"><a class="nav-link text-white fw-semibold active" href="pago.html">Pago</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <main class="container py-5">
+    <div class="row g-4">
+      <!-- Resumen del carrito -->
+      <div class="col-lg-6">
+        <div class="cart-summary">
+          <h4 class="mb-3 text-center">🛒 Resumen del Carrito</h4>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+              </tr>
+            </thead>
+            <tbody id="cart-items">
+              <!-- Items del carrito se insertan aquí -->
+            </tbody>
+            <tfoot>
+              <tr>
+                <th colspan="2" class="text-end">Total:</th>
+                <th id="cart-total">$0</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- Formulario de pago -->
+      <div class="col-lg-6">
+        <div class="card shadow p-4">
+          <h4 class="text-center mb-3">💳 Pago Seguro</h4>
+          <form id="paymentForm">
+            <div class="mb-3">
+              <label class="form-label">Nombre en la tarjeta</label>
+              <input type="text" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Número de tarjeta</label>
+              <input type="text" class="form-control" maxlength="16" placeholder="0000 0000 0000 0000" required>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Fecha de expiración</label>
+                <input type="month" class="form-control" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">CVV</label>
+                <input type="text" class="form-control" maxlength="3" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Dirección de envío</label>
+              <textarea class="form-control" rows="2" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-warning w-100 fw-bold">Confirmar Pago</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 Happy Kids - Todos los derechos reservados</p>
+  </footer>
+
+  <!-- Modal de confirmación -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center p-4">
+        <h5 class="text-success">✅ ¡Pago realizado con éxito!</h5>
+        <p>Tu compra ha sido procesada. Te enviamos un correo con el comprobante.</p>
+        <button class="btn btn-warning" data-bs-dismiss="modal" onclick="window.location.href='index.html'">Volver al inicio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Simular los datos del carrito (deberían venir del localStorage)
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [
+      { nombre: "Bloques de madera", cantidad: 2, precio: 8000 },
+      { nombre: "Robot educativo", cantidad: 1, precio: 15000 }
+    ];
+
+    // Mostrar los productos del carrito
+    const tbody = document.getElementById("cart-items");
+    const totalEl = document.getElementById("cart-total");
+    let total = 0;
+
+    carrito.forEach(item => {
+      const fila = document.createElement("tr");
+      fila.innerHTML = `
+        <td>${item.nombre}</td>
+        <td>${item.cantidad}</td>
+        <td>$${item.precio * item.cantidad}</td>
+      `;
+      tbody.appendChild(fila);
+      total += item.precio * item.cantidad;
+    });
+
+    totalEl.textContent = `$${total.toLocaleString()}`;
+
+    // Al confirmar pago
+    document.getElementById("paymentForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const modal = new bootstrap.Modal(document.getElementById("confirmModal"));
+      modal.show();
+      localStorage.removeItem("carrito");
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Happy Kids - Carrito</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <nav class="navbar navbar-expand-lg navbar-warning bg-warning">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-white" href="index.html">Happy Kids</a>
+      <div class="collapse navbar-collapse justify-content-end">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link text-white fw-semibold" href="CatalogoReal.html">Catálogo</a></li>
+          <li class="nav-item"><a class="nav-link text-white fw-semibold" href="CarritoReal.html">Carrito</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container my-5">
+    <h2 class="text-center mb-4">Tu Carrito de Compras</h2>
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-warning">
+          <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="tablaCarrito"></tbody>
+      </table>
+    </div>
+
+    <div class="text-end mt-3">
+      <h4 id="total"></h4>
+      <button class="btn btn-danger me-2" onclick="vaciarCarrito()">Vaciar carrito</button>
+      <a href="PagoReal.html" class="btn btn-success">Proceder al Pago</a>
+    </div>
+  </main>
+
+  <footer class="bg-dark text-white text-center py-3">
+    <p class="mb-0">&copy; 2025 Happy Kids - Todos los derechos reservados</p>
+  </footer>
+
+  <script>
+    function cargarCarrito() {
+      const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+      const tabla = document.getElementById("tablaCarrito");
+      const total = document.getElementById("total");
+
+      if (carrito.length === 0) {
+        tabla.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Tu carrito está vacío</td></tr>`;
+        total.innerText = "";
+        return;
+      }
+
+      let totalCompra = 0;
+      tabla.innerHTML = "";
+
+      carrito.forEach((p, i) => {
+        const subtotal = p.precio * p.cantidad;
+        totalCompra += subtotal;
+
+        tabla.innerHTML += `
+          <tr>
+            <td>${p.nombre}</td>
+            <td>$${p.precio.toLocaleString()}</td>
+            <td>
+              <input type="number" min="1" value="${p.cantidad}" class="form-control w-50 mx-auto" onchange="cambiarCantidad(${i}, this.value)">
+            </td>
+            <td>$${subtotal.toLocaleString()}</td>
+            <td><button class="btn btn-sm btn-danger" onclick="eliminarProducto(${i})">Eliminar</button></td>
+          </tr>
+        `;
+      });
+
+      total.innerText = `Total: $${totalCompra.toLocaleString()}`;
+    }
+
+    function cambiarCantidad(index, nuevaCantidad) {
+      let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+      carrito[index].cantidad = parseInt(nuevaCantidad);
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+      cargarCarrito();
+    }
+
+    function eliminarProducto(index) {
+      let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+      carrito.splice(index, 1);
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+      cargarCarrito();
+    }
+
+    function vaciarCarrito() {
+      localStorage.removeItem("carrito");
+      cargarCarrito();
+    }
+
+    cargarCarrito();
+  </script>
+</body>
+</html>
